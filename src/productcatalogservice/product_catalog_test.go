@@ -99,3 +99,26 @@ func TestSearchProducts(t *testing.T) {
 		t.Errorf("got %d, want %d", got, want)
 	}
 }
+
+func TestLoadCatalogFromAlloyDB(t *testing.T) {
+	// Set environment variables to use AlloyDB.
+	os.Setenv("ALLOYDB_CLUSTER_NAME", "test-cluster")
+	os.Setenv("ALLOYDB_INSTANCE_NAME", "test-instance")
+	os.Setenv("ALLOYDB_DATABASE_NAME", "test-database")
+	os.Setenv("ALLOYDB_TABLE_NAME", "test-table")
+	os.Setenv("ALLOYDB_SECRET_NAME", "test-secret")
+
+	// Create a new product catalog.
+	catalog := &pb.ListProductsResponse{}
+
+	// Load the catalog from AlloyDB.
+	err := loadCatalog(catalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Check that the catalog is not empty.
+	if len(catalog.Products) == 0 {
+		t.Error("catalog is empty")
+	}
+}
